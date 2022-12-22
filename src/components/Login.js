@@ -1,8 +1,11 @@
 import React ,{useState} from 'react'
-import axios from 'axios'
+import { useNavigate,Link } from 'react-router-dom';
 import { Button, Checkbox, Form, Input } from 'antd';
+import { useUserContext } from '../context/userContext';
 const Login = () => {
-
+const {users} = useUserContext()
+const navigate = useNavigate()
+console.log(users);
     const [formData,setFormData] = useState({
         name:"",
         password:'',
@@ -12,17 +15,16 @@ const Login = () => {
 
 const handleSubmit = async (e)=>{
 e.preventDefault()
-    let response = await axios.post('http://localhost:3000/posts',formData);
-    if(response){
-        alert('data submitted sucessfully')
-    }else{
-        alert('something went wrong')
-    }
-    setFormData({
-        email:"",
-        password:'',
-        rememberMe:false
-    })
+  const isUser =  users.find((user)=>user.email == formData.email && user.password == formData.password)
+  if(isUser){
+    alert('login sucessful')
+    navigate('/dashboard')
+  }else{
+    alert('invalid username or password')
+    setFormData({ name:"",
+    password:'',
+    rememberMe:false})
+  }
 }
   return (
     <div className='login-form'>
@@ -37,7 +39,7 @@ e.preventDefault()
         remember: false,
       }}>
         <Form.Item
-        label="Username"
+        label="Email"
         name="username"
         rules={[
           {
@@ -79,7 +81,8 @@ e.preventDefault()
         }}
       >
 
-            <Button type="primary" style={{backgroundColor:"#D0B8A8"}} onClick={handleSubmit}> Submit data</Button>
+            <Button type="primary" style={{backgroundColor:"#D0B8A8"}} onClick={handleSubmit}>Login</Button>
+            <p>Don't have an account?<br/><Link to='/register'>Register </Link></p>
       </Form.Item>
         </Form>
     </div>
