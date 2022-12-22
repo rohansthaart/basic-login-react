@@ -11,3 +11,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.login-form{
+  margin: 0;
+  border: 1px solid #DFD3C3;
+  box-shadow:5px 10px #F8EDE3 ;
+  padding: 2rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%)
+}
