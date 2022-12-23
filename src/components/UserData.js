@@ -1,97 +1,114 @@
-import React, { useState } from 'react';
-import { Divider, Radio, Table } from 'antd';
+import React, { useState,useEffect } from 'react';
+import { Divider, Table } from 'antd';
 import { useUserContext } from '../context/userContext';
+import axios from 'axios';
+import EditForm from './EditUserForm';
+import {
+  EditOutlined,
+  DeleteOutlined,
+ 
+} from '@ant-design/icons';
 import styled from 'styled-components';
 
 
-const columns = [
-  {
-    title: 'First Name',
-    dataIndex: 'fname',
-    
-   
-  },
-  {
-    title: 'Last Name',
-    dataIndex: 'lname',
-  },
-  {
-    title: 'Email',
-    dataIndex: 'email',
-  },
-  {
-    title: 'Phone',
-    dataIndex: 'phone',
-  },
-  {
-    title: 'Password',
-    dataIndex: 'password',
-  },
-  {
-    title: 'isAcive',
-    dataIndex: 'isActive',
-  },
-  {
-    title: 'Edit',
-    key: 'operation',
-    render:()=> <p>;:</p>
-  },
-];
-const data = [
-  {
-    key: '1',
-    fname: 'John ',
-    lname: 'Brown',
-   email:'rohanstha000@gmail.com',
-   phone:'9843686191',
-   password:'test'
-  },
-  {
-    key: '2',
-    fname: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    fname: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-  },
-  {
-    key: '4',
-    fname: 'Disabled User',
-    age: 99,
-    address: 'Sidney No. 1 Lake Park',
-  },{
-    key: '5',
-    fname: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-  },
-  {
-    key: '6',
-    fame: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-  },
- 
-];
 
-// rowSelection object indicates the need for row selection
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  getCheckboxProps: (record) => ({
-    disabled: record.name === 'Disabled User',
-    // Column configuration not to be checked
-    name: record.name,
-  }),
-};
+
+
+
 const UserData = () => {
-    const {users} = useUserContext()
+    const {users,fetchUsers,setEditUser,editUser} = useUserContext()
+    
+    const handleEdit = async (id)=>{
+      try{
+        const user = await users.find((user)=>user.id === id)
+        await setEditUser(user)
+        await console.log(editUser);
+      }catch(err){
+          console.log(err);
+      }
+    }
+     
+
+
+
+
+    const columns = [
+      {
+        title: 'First Name',
+        dataIndex: 'fname',
+        
+       
+      },
+      {
+        title: 'Last Name',
+        dataIndex: 'lname',
+      },
+      {
+        title: 'Email',
+        dataIndex: 'email',
+      },
+      {
+        title: 'Phone',
+        dataIndex: 'phone',
+      },
+      {
+        title: 'Password',
+        dataIndex: 'password',
+      },
+      {
+        title: 'isAcive',
+        dataIndex: 'isActive',
+        render:(_, record)=> record.isActive?<p>active</p>:<p>inactive</p>
+      },
+      {
+        title: 'Edit',
+        key: 'operation',
+        render:(_,record)=> <p><EditOutlined onClick={()=>{handleEdit(record.id)}}/></p>
+      },
+      {
+        title: 'Delete',
+        key: 'operation',
+        render:(_, record)=> <p><DeleteOutlined onClick={()=>{deleteUser(record.id)}} /></p>
+      },
+    ];
+    
+    
+    // rowSelection object indicates the need for row selection
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      },
+      getCheckboxProps: (record) => ({
+        disabled: record.name === 'Disabled User',
+        // Column configuration not to be checked
+        name: record.name,
+      }),
+    };
+    
+    const deleteUser = async (id)=>{
+      try{
+       await axios.delete(`http://localhost:3000/posts/${id}`)
+       fetchUsers(`http://localhost:3000/posts/`)
+      }catch(error){
+      }
+    }
+    
+    useEffect(()=>{
+      fetchUsers('http://localhost:3000/posts/')
+     
+  },[])
+  
+
   const [selectionType, setSelectionType] = useState('checkbox');
+
+
+
+
+ 
+
+
+
+
   return (
     <Wrapper>
     <div>
@@ -112,10 +129,20 @@ const UserData = () => {
       <p>Active Users: 20</p>
       <p>Inactive Users: 20</p>
     </div>
+    {editUser?<EditForm/>:null}
     </Wrapper>
   );
 };
 export default UserData;
+
+
+
+
+
+
+
+
+
 
 const Wrapper = styled.main`
  margin: 0;

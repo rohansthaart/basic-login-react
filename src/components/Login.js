@@ -3,27 +3,31 @@ import { useNavigate,Link } from 'react-router-dom';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { useUserContext } from '../context/userContext';
 const Login = () => {
-const {users} = useUserContext()
+const {users,setIsLogin} = useUserContext()
 const navigate = useNavigate()
 console.log(users);
     const [formData,setFormData] = useState({
         name:"",
         password:'',
-        rememberMe:false
+     
     })
 
 
 const handleSubmit = async (e)=>{
 e.preventDefault()
-  const isUser =  users.find((user)=>user.email == formData.email && user.password == formData.password)
+  const isUser =  users.find((user)=>user.email == formData.email && user.password == formData.password && user.isAdmin == true)
   if(isUser){
     alert('login sucessful')
+    setIsLogin(true)
     navigate('/dashboard')
   }else{
-    alert('invalid username or password')
-    setFormData({ name:"",
-    password:'',
-    rememberMe:false})
+    alert('invalid username or password or user is not admin')
+    setFormData({
+      name:"",
+      password:'',
+    
+  })
+
   }
 }
   return (

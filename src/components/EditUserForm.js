@@ -1,55 +1,44 @@
-import React,{useState,useMemo} from 'react'
-import {useNavigate ,Link} from 'react-router-dom'
-import { Button, Checkbox, Form, Input,Alert  } from 'antd';
 import axios from 'axios'
+import React,{useState} from 'react'
+import { Link } from 'react-router-dom';
+import { Button, Checkbox, Form, Input,Alert  } from 'antd';
 import { useUserContext } from '../context/userContext'
-
-
-
-export default function Register() {
-    const navigate = useNavigate()
-    const {users} = useUserContext()
-    const [formData,setFormData] = useState({
-        fname:"",
-        lname:"",
-        email:"",
-        password:"",
-        phone:"",
-        isAdmin:false,
-        isActive:true
-    })
-
- 
-    
-
-    const handleSubmit = async (e)=>{
-      e.preventDefault()
-      const alreadyExist = users.find((user)=>user.email == formData.email)
-      if(alreadyExist || !formData.fname || !formData.lname || !formData.email || !formData.password || !formData.phone){
-       alert('user already exist or missing data')
-      }else{
-      let response = await axios.post('http://localhost:3000/posts',formData);
-    if(response){
-       
-        navigate('/dashboard')
-    }else{
-        alert('something went wrong')
-    }
+function EditForm() {
    
-      }
-      setFormData({
-        fname:"",
-        lname:"",
-        email:"",
-        password:"",
-        phone:"",
-        isAdmin:false,
-       })
+    const {
+            editUser,
+            fetchUsers,
+            setEditUser,
+            isAdmin,id,
+            fetchSingleUser,
+            setIsEdited
+        } = useUserContext()
+
+        const [formData,setFormData] = useState({
+            fname:editUser.fname,
+            lname:editUser.lname,
+            email:editUser.email,
+            password:editUser.password,
+            phone:editUser.phone,
+            isAdmin:editUser.isAdmin,
+            isActive:editUser.isActive
+        })
+console.log(formData.isActive);
+
+    const submitEdit =async (e)=>{
+        e.preventDefault()
+        try{
+            await axios.patch(`http://localhost:3000/posts/${editUser.id}`,formData)
+        fetchUsers(`http://localhost:3000/posts`)
+            setEditUser()
+            setIsEdited(true)
+        }catch(error){  
+            console.log(error);
+        }
     }
-    
-  
-    return (
-        <div className='login-form'>
+  return (
+    <div> 
+        <h3>{`Edit user with id: ${editUser.id}`}</h3>
         <Form  name="basic"
       labelCol={{
         span: 8,
@@ -130,34 +119,23 @@ export default function Register() {
             <Input.Password value={formData.password} onChange={(e)=>setFormData({...formData , password:e.target.value})}/>
        </Form.Item>
 
-
-
-
-
-        
-
        <Form.Item
-        name="isAdmin"
-        valuePropName="isAdmin"
+        name="edit"
+        valuePropName="edit"
         wrapperCol={{
           offset: 8,
           span: 16,
         }}
       >
 
-            <Checkbox type="checkbox" value={formData.isAdmin} onChange={(e)=>setFormData({...formData, isAdmin:(!formData.isAdmin)})} >isAdmin</Checkbox>
-      </Form.Item>
-      <Form.Item
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
+    
 
-            <Button type="primary"  style={{backgroundColor:"#D0B8A8"}} onClick={handleSubmit}> Submit data</Button>
-            <p>Already have account?<br/><Link to="/">  Login </Link></p>
+            <Button type="primary"  style={{backgroundColor:"#D0B8A8"}} onClick={submitEdit}>Edit Data</Button>
       </Form.Item>
         </Form>
-    </div>
-    )
+   
+   </div>
+  )
 }
+
+export default EditForm

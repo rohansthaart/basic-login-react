@@ -3,29 +3,23 @@
     {
       "fname": "Rohan",
       "lname": "Shrestha",
-      "email": "rohanstha000@gmail.comd",
-      "password": "fsdfsdfsdf",
-      "phone": "+9779843686191",
-      "isAdmin": false,
-      "id": 22
-    },
-    {
-      "fname": "Rohan",
-      "lname": "Shrestha",
       "email": "rohanstha000@gmail.com",
       "password": "test",
       "phone": "+9779843686191",
       "isAdmin": true,
-      "id": 24
+      "isActive": true,
+      "id": 26,
+      "name": "Rohan Shresth"
     },
     {
       "fname": "Rohan",
       "lname": "Shrestha",
-      "email": "rohanstha000@gmail.com1",
+      "email": "rohanstha0000@gmail.com",
       "password": "test",
       "phone": "+9779843686191",
-      "isAdmin": true,
-      "id": 25
+      "isAdmin": false,
+      "isActive": true,
+      "id": 27
     }
   ]
 }

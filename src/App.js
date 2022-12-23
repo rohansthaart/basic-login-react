@@ -6,7 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import Register from "./pages/RegisterPage";
 
 function App() {
-   
+   //json-server --watch db.json
   return (
     <BrowserRouter>
       <Routes>
